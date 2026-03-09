@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifying — Money Wise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: #0F0F14;
+      font-family: 'DM Sans', sans-serif;
+      color: #F3F4F8;
+      overflow: hidden;
+    }
+
+    /* Orbs */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(90px); pointer-events: none;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(66,99,235,0.4), transparent 70%);
+      top: -180px; left: -140px;
+    }
+    .orb-2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(81,207,102,0.22), transparent 70%);
+      bottom: -120px; right: -100px;
+    }
+
+    /* Grid */
+    .grid {
+      position: fixed; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(116,143,252,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(116,143,252,0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    }
+
+    /* Center */
+    .center {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+
+    /* Glass card */
+    .card {
+      width: 100%; max-width: 380px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(32px) saturate(180%);
+      -webkit-backdrop-filter: blur(32px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 48px 36px 40px;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 80px rgba(116,143,252,0.12);
+      animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Spinner */
+    .spinner-wrap {
+      width: 72px; height: 72px;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .spinner-bg {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(116,143,252,0.15), rgba(66,99,235,0.25));
+      border: 1px solid rgba(116,143,252,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid rgba(116,143,252,0.2);
+      border-top-color: #748FFC;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    h1 {
+      font-size: 22px; font-weight: 700;
+      color: #F3F4F8; letter-spacing: -0.4px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 14px; color: rgba(243,244,248,0.5);
+      line-height: 1.6;
+    }
+
+    /* Progress dots */
+    .dots {
+      display: flex; justify-content: center; gap: 6px;
+      margin-top: 28px;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(116,143,252,0.3);
+      animation: dotPulse 1.2s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 100% { background: rgba(116,143,252,0.3); transform: scale(1); }
+      50%       { background: #748FFC; transform: scale(1.4); }
+    }
+
+    /* Logo */
+    .logo {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 32px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #748FFC, #4263EB);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(116,143,252,0.35);
+    }
+    .logo-icon img { width: 22px; height: 22px; border-radius: 5px; }
+    .logo-name {
+      font-size: 16px; font-weight: 700; color: #F3F4F8; letter-spacing: -0.2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="grid"></div>
+
+  <div class="center">
+    <div class="card">
+      <div class="logo">
+        <div class="logo-icon">
+          <img src="https://moneywise-self.vercel.app/logo.png" alt="Money Wise" />
+        </div>
+        <span class="logo-name">Money Wise</span>
+      </div>
+
+      <div class="spinner-wrap">
+        <div class="spinner-bg">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <h1>Verifying your email…</h1>
+      <p>Please wait while we confirm<br>your account.</p>
+
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Read the Supabase confirmation URL from ?url= param
+    const params = new URLSearchParams(window.location.search);
+    const supabaseUrl = params.get('url');
+
+    if (supabaseUrl) {
+      // Small delay so user sees the verification page
+      setTimeout(() => {
+        window.location.href = decodeURIComponent(supabaseUrl);
+      }, 1500);
+    } else {
+      // No URL param — just go to success page
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
