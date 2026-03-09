@@ -174,12 +174,16 @@
     const supabaseUrl = params.get('url');
 
     if (supabaseUrl) {
-      // Small delay so user sees the verification page
+      // Force redirect_to point to our success page, not the deep link
+      let decoded = decodeURIComponent(supabaseUrl);
+      // Replace any existing redirect_to with our success page
+      decoded = decoded.replace(/&redirect_to=[^&]*/g, '');
+      decoded = decoded.replace(/\?redirect_to=[^&]*/g, '?');
+      decoded += (decoded.includes('?') ? '&' : '?') + 'redirect_to=' + encodeURIComponent('https://moneywise-self.vercel.app/');
       setTimeout(() => {
-        window.location.href = decodeURIComponent(supabaseUrl);
+        window.location.href = decoded;
       }, 1500);
     } else {
-      // No URL param — just go to success page
       setTimeout(() => {
         window.location.href = '/';
       }, 1500);
