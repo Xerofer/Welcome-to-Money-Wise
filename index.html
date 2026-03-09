@@ -24,7 +24,7 @@
       background: #0F0F14;
       font-family: 'DM Sans', sans-serif;
       color: var(--text);
-      overflow: hidden;
+      overflow-y: auto;
     }
 
     /* ── Orbs ── */
@@ -325,7 +325,7 @@
     return params;
   }
 
-  const params   = getParams();
+  const params    = getParams();
   const appScheme = 'io.supabase.moneywise://login-callback/';
 
   function buildAppUrl() {
@@ -354,7 +354,20 @@
     secEl.textContent = remaining;
     const progress = (TOTAL - remaining) / TOTAL;
     ringEl.style.strokeDashoffset = progress * CIRCUM;
-    if (remaining <= 0) window.location.href = appUrl;
+    if (remaining <= 0) openApp();
+  }
+
+  function openApp() {
+    // Use a hidden iframe to trigger the deep link silently
+    // This avoids the "Open with..." Android dialog
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
+    // Fallback: if app doesn't open in 2s, use direct location
+    setTimeout(() => {
+      window.location.href = appUrl;
+    }, 2000);
   }
 
   setTimeout(() => {
