@@ -4,161 +4,238 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifying — Money Wise</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ─── Money Wise design tokens (matches lib/main.dart) ─────────── */
+    :root {
+      --bg:          #F5F4FF;
+      --surface:     #FFFFFF;
+      --border:      rgba(0,0,0,0.07);
+      --text:        rgba(0,0,0,0.87);
+      --text-muted:  rgba(0,0,0,0.55);
+      --indigo:      #6366F1;
+      --indigo2:     #8B5CF6;
+      --green:       #10B981;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:          #0D0D1A;
+        --surface:     rgba(255,255,255,0.05);
+        --border:      rgba(255,255,255,0.08);
+        --text:        rgba(255,255,255,0.95);
+        --text-muted:  rgba(255,255,255,0.55);
+      }
+    }
+
     html, body {
       height: 100%;
-      background: #0F0F14;
-      font-family: 'DM Sans', sans-serif;
-      color: #F3F4F8;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow: hidden;
     }
 
-    /* Orbs */
-    .orb {
-      position: fixed; border-radius: 50%;
-      filter: blur(90px); pointer-events: none;
+    /* ─── Ambient gradient blobs (same as privacy / reset pages) ──── */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
     }
-    .orb-1 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(66,99,235,0.4), transparent 70%);
-      top: -180px; left: -140px;
+    body::before {
+      width: 540px; height: 540px;
+      top: -180px; left: -160px;
+      background: radial-gradient(circle, rgba(99,102,241,0.22) 0%, transparent 70%);
     }
-    .orb-2 {
-      width: 380px; height: 380px;
-      background: radial-gradient(circle, rgba(81,207,102,0.22), transparent 70%);
-      bottom: -120px; right: -100px;
+    body::after {
+      width: 420px; height: 420px;
+      bottom: -120px; right: -120px;
+      background: radial-gradient(circle, rgba(139,92,246,0.16) 0%, transparent 70%);
+    }
+    @media (prefers-color-scheme: light) {
+      body::before { background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%); }
+      body::after  { background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%); }
     }
 
-    /* Grid */
+    /* ─── Subtle grid (only visible in dark mode, like the app feel) ── */
     .grid {
       position: fixed; inset: 0; pointer-events: none;
       background-image:
-        linear-gradient(rgba(116,143,252,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(116,143,252,0.05) 1px, transparent 1px);
+        linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
       background-size: 48px 48px;
       mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    }
+    @media (prefers-color-scheme: light) {
+      .grid {
+        background-image:
+          linear-gradient(rgba(99,102,241,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(99,102,241,0.025) 1px, transparent 1px);
+      }
     }
 
-    /* Center */
+    /* ─── Center wrapper ─────────────────────────────────────────── */
     .center {
       position: relative; z-index: 10;
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 24px;
     }
 
-    /* Glass card */
+    /* ─── Card (mirrors the privacy/reset pages — same family) ────── */
     .card {
       width: 100%; max-width: 380px;
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(32px) saturate(180%);
-      -webkit-backdrop-filter: blur(32px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      padding: 48px 36px 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 28px 32px;
       text-align: center;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04) inset,
-        0 32px 80px rgba(0,0,0,0.6),
-        0 0 80px rgba(116,143,252,0.12);
-      animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+        0 24px 60px rgba(0,0,0,0.25),
+        0 0 60px rgba(99,102,241,0.10);
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
     }
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(24px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+    @media (prefers-color-scheme: light) {
+      .card {
+        box-shadow:
+          0 16px 40px rgba(99,102,241,0.10),
+          0 0 60px rgba(99,102,241,0.06);
+      }
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Spinner */
-    .spinner-wrap {
-      width: 72px; height: 72px;
-      margin: 0 auto 28px;
+    /* ─── Logo strip (same logo lockup as privacy page) ────────────── */
+    .logo {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 28px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo2) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+    }
+    .logo-icon svg {
+      width: 20px; height: 20px;
+      fill: white;
+    }
+    .logo-name {
+      font-size: 15px; font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    /* ─── Animated icon — gradient tile with spinner inside ──────── */
+    .icon-wrap {
+      width: 76px; height: 76px;
+      margin: 0 auto 24px;
       position: relative;
     }
-    .spinner-bg {
-      width: 72px; height: 72px;
+    .icon-tile {
+      width: 76px; height: 76px;
       border-radius: 20px;
-      background: linear-gradient(135deg, rgba(116,143,252,0.15), rgba(66,99,235,0.25));
-      border: 1px solid rgba(116,143,252,0.3);
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo2) 100%);
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 32px rgba(99,102,241,0.40);
+      position: relative;
     }
+
+    /* Outer pulsing ring — feedback that the page is actively working */
+    .icon-tile::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 26px;
+      border: 2px solid rgba(99,102,241,0.35);
+      animation: pulse 1.8s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { transform: scale(1);    opacity: 0.7; }
+      100% { transform: scale(1.20); opacity: 0;   }
+    }
+
+    /* Spinner — sits inside the gradient tile */
     .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid rgba(116,143,252,0.2);
-      border-top-color: #748FFC;
+      width: 34px; height: 34px;
+      border: 3px solid rgba(255,255,255,0.25);
+      border-top-color: white;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     h1 {
-      font-size: 22px; font-weight: 700;
-      color: #F3F4F8; letter-spacing: -0.4px;
-      margin-bottom: 10px;
+      font-size: 20px; font-weight: 800;
+      color: var(--text); letter-spacing: -0.4px;
+      margin-bottom: 8px;
     }
     p {
-      font-size: 14px; color: rgba(243,244,248,0.5);
-      line-height: 1.6;
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.55;
     }
 
-    /* Progress dots */
+    /* ─── Progress dots ──────────────────────────────────────────── */
     .dots {
-      display: flex; justify-content: center; gap: 6px;
-      margin-top: 28px;
+      display: inline-flex; justify-content: center; gap: 6px;
+      margin-top: 24px;
     }
     .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(116,143,252,0.3);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--indigo);
+      opacity: 0.3;
       animation: dotPulse 1.2s ease-in-out infinite;
     }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.30s; }
     @keyframes dotPulse {
-      0%, 100% { background: rgba(116,143,252,0.3); transform: scale(1); }
-      50%       { background: #748FFC; transform: scale(1.4); }
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      40%      { opacity: 1.0; transform: scale(1.0);  }
     }
 
-    /* Logo */
-    .logo {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; margin-bottom: 32px;
-    }
-    .logo-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, #748FFC, #4263EB);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 16px rgba(116,143,252,0.35);
-    }
-    .logo-icon img { width: 22px; height: 22px; border-radius: 5px; }
-    .logo-name {
-      font-size: 16px; font-weight: 700; color: #F3F4F8; letter-spacing: -0.2px;
+    @media (max-width: 380px) {
+      .card { padding: 32px 22px 24px; }
+      .icon-wrap, .icon-tile { width: 64px; height: 64px; }
+      .spinner { width: 28px; height: 28px; }
     }
   </style>
 </head>
 <body>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
   <div class="grid"></div>
 
   <div class="center">
     <div class="card">
+
+      <!-- Logo lockup -->
       <div class="logo">
         <div class="logo-icon">
-          <img src="https://moneywise-self.vercel.app/logo.png" alt="Money Wise" />
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 18v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-9a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+          </svg>
         </div>
         <span class="logo-name">Money Wise</span>
       </div>
 
-      <div class="spinner-wrap">
-        <div class="spinner-bg">
+      <!-- Animated icon with spinner -->
+      <div class="icon-wrap">
+        <div class="icon-tile">
           <div class="spinner"></div>
         </div>
       </div>
 
-      <h1>Verifying your email…</h1>
-      <p>Please wait while we confirm<br>your account.</p>
+      <h1>Verifying your email</h1>
+      <p>Please wait while we confirm your account…</p>
 
       <div class="dots">
         <div class="dot"></div>
