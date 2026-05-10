@@ -4,56 +4,242 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Money Wise — Reset Password</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Money Wise design tokens (matches lib/main.dart) ─────────── */
     :root {
-      --bg: #0F0F14;
-      --indigo: #748FFC;
-      --indigo2: #4263EB;
-      --text: #F3F4F8;
-      --muted: rgba(243,244,248,0.45);
+      --bg:          #F5F4FF;
+      --surface:     #FFFFFF;
+      --border:      rgba(0,0,0,0.07);
+      --text:        rgba(0,0,0,0.87);
+      --text-muted:  rgba(0,0,0,0.55);
+      --indigo:      #6366F1;
+      --indigo2:     #8B5CF6;
+      --green:       #10B981;
     }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:          #0D0D1A;
+        --surface:     rgba(255,255,255,0.05);
+        --border:      rgba(255,255,255,0.08);
+        --text:        rgba(255,255,255,0.95);
+        --text-muted:  rgba(255,255,255,0.55);
+      }
+    }
+
     html, body {
-      height: 100%; background: var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      height: 100%;
+      background: var(--bg);
       color: var(--text);
-      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
     }
-    .wrap {
-      text-align: center; padding: 32px;
-      opacity: 0; animation: fadeIn 0.4s ease 0.2s forwards;
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
-    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* Ambient gradient blobs — same vibe as the app */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(70px);
+    }
+    body::before {
+      width: 500px; height: 500px;
+      top: -150px; left: -200px;
+      background: radial-gradient(circle, rgba(99,102,241,0.20) 0%, transparent 70%);
+    }
+    body::after {
+      width: 400px; height: 400px;
+      bottom: -100px; right: -150px;
+      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+    }
+    @media (prefers-color-scheme: light) {
+      body::before { background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%); }
+      body::after  { background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%); }
+    }
+
+    /* ─── Card (mirrors the app's hero card pattern) ───────────────── */
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 380px;
+      width: calc(100% - 32px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 28px 32px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Icon — gradient with the same shadow recipe as Remove Ads ── */
     .icon {
-      width: 72px; height: 72px; border-radius: 20px; margin: 0 auto 24px;
-      background: linear-gradient(135deg, #4263EB, #748FFC);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 12px 40px rgba(66,99,235,0.4);
+      width: 76px; height: 76px;
+      border-radius: 20px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 32px rgba(99,102,241,0.40);
+      position: relative;
     }
-    .icon svg { width: 36px; height: 36px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    p { font-size: 15px; color: var(--muted); }
+    .icon svg {
+      width: 36px; height: 36px;
+      stroke: white;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Pulsing ring around the icon — subtle "active" feedback */
+    .icon::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 26px;
+      border: 2px solid rgba(99,102,241,0.35);
+      animation: pulse 1.8s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      100% { transform: scale(1.18); opacity: 0;   }
+    }
+
+    /* ─── Title + body (matches the app's typography weights) ──────── */
+    h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 28px;
+    }
+
+    /* Animated dot row — three dots breathing in sequence */
+    .dots {
+      display: inline-flex;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--indigo);
+      opacity: 0.3;
+      animation: dotPulse 1.2s ease-in-out infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.15s; }
+    .dots span:nth-child(3) { animation-delay: 0.30s; }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      40%      { opacity: 1.0; transform: scale(1.0);  }
+    }
+
+    /* ─── CTA button — matches the app's primary gradient button ──── */
     .app-btn {
-      display: inline-block; margin-top: 24px; padding: 12px 28px;
-      background: linear-gradient(135deg, var(--indigo2), var(--indigo));
-      color: #fff; text-decoration: none; border-radius: 12px;
-      font-size: 14px; font-weight: 600;
-      box-shadow: 0 8px 24px rgba(66,99,235,0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo2) 100%);
+      color: white !important;
+      text-decoration: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .app-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(99,102,241,0.45);
+    }
+    .app-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(99,102,241,0.35);
+    }
+    .app-btn svg {
+      width: 16px; height: 16px;
+      stroke: white;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ─── Footer note ──────────────────────────────────────────────── */
+    .footnote {
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 380px) {
+      .card { padding: 32px 22px 24px; }
+      .icon { width: 64px; height: 64px; }
+      .icon svg { width: 30px; height: 30px; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="card">
     <div class="icon">
-      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
     </div>
-    <p>Opening Money Wise…</p>
-    <a class="app-btn" id="appLink" href="#">If the app didn't open, tap here</a>
+
+    <h1>Opening Money Wise</h1>
+    <p class="subtitle">Redirecting you to the app to set your new password…</p>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <a class="app-btn" id="appLink" href="#">
+      <svg viewBox="0 0 24 24">
+        <rect x="5" y="2" width="14" height="20" rx="2"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+      Open Money Wise
+    </a>
+
+    <p class="footnote">If the app didn't open automatically, tap the button above.</p>
   </div>
 
   <script>
     // Grab all tokens Supabase put in the URL fragment
     function getFragmentParams() {
-      // Supabase may use hash fragment or query params depending on flow
       const hash   = window.location.hash.replace(/^#/, '');
       const search = window.location.search.replace(/^\?/, '');
       const raw    = hash || search;
@@ -67,20 +253,16 @@
       });
       return p;
     }
-
     const params    = getFragmentParams();
     const appScheme = 'io.supabase.moneywise://reset-callback/';
-
     function buildAppUrl() {
       const frag = Object.entries(params)
         .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
         .join('&');
       return appScheme + (frag ? '#' + frag : '');
     }
-
     const appUrl = buildAppUrl();
     document.getElementById('appLink').href = appUrl;
-
     // Redirect immediately — no countdown needed
     window.location.href = appUrl;
   </script>
